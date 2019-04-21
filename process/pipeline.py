@@ -8,13 +8,13 @@ class SpeedOnFreewayFn(beam.DoFn):
 
     def process(self, el):
 
-        #logging.info('SpeedOnFreewayFn in {}'.format(el))
+        logging.info('SpeedOnFreewayFn in {}'.format(el))
 
         parsed = el.split(',')
 
         freeway_and_speed = (str(parsed[3]), float(parsed[6]))
 
-        #logging.info('SpeedOnFreewayFn out {}'.format(freeway_and_speed))
+        logging.info('SpeedOnFreewayFn out {}'.format(freeway_and_speed))
 
         yield freeway_and_speed
 
@@ -22,7 +22,7 @@ class FormatBQRowFn(beam.DoFn):
 
     def process(self, el, window=beam.DoFn.WindowParam):
 
-        #logging.info('FormatBQRowFn in {}'.format(el))
+        logging.info('FormatBQRowFn in {}'.format(el))
 
         ts_format = '%Y-%m-%d %H:%M:%S.%f UTC'
 
@@ -36,7 +36,7 @@ class FormatBQRowFn(beam.DoFn):
             'window_end': window_end
             }
 
-        #logging.info('FormatBQRowFn out {}'.format(formatted))
+        logging.info('FormatBQRowFn out {}'.format(formatted))
 
         yield formatted
 
@@ -87,7 +87,6 @@ def run():
         stream = pipeline | beam.io.ReadFromPubSub(pubsub_topic_path)
 
         speeds = stream | 'SpeedOnFreeway' >> beam.ParDo(SpeedOnFreewayFn())
-        #speeds = stream | 'SpeedOnHighway' >> beam.Map(lambda x: (x[3], float(x[6])))
 
         window = speeds | beam.WindowInto(beam.transforms.window.FixedWindows(5, 0))
 
@@ -97,7 +96,6 @@ def run():
 
 
         formatted = average | 'Format' >> beam.ParDo(FormatBQRowFn())
-        #| 'FormatForBQ' >> beam.Map(lambda x: {'freeway': str(x[0]), 'speed': x[1]})
 
         formatted | 'SinkToBQ' >> beam.io.WriteToBigQuery(args.bq,
                 schema='freeway:STRING, speed:FLOAT, window_start:TIMESTAMP, window_end:TIMESTAMP',
