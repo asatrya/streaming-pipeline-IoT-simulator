@@ -16,8 +16,12 @@ RUN export CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)" && \
     curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - && \
     apt-get update -y && apt-get install google-cloud-sdk -y
 
+ENV GOOGLE_APPLICATION_CREDENTIALS /usr/local/etc/key.json
+COPY image-files/ /
+RUN chmod 700 /usr/local/bin/docker-entrypoint.sh
+
 RUN mkdir /app
 WORKDIR /app
 COPY . .
 
-CMD ["tail", "-f", "/dev/null"]
+CMD ["docker-entrypoint.sh"]

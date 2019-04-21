@@ -7,3 +7,4 @@ services:
       - .env
     volumes:
       - .:/app
+      - ./key.json:/usr/local/etc/key.json
