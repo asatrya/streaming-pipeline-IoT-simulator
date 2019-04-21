@@ -1,17 +1,11 @@
 #!/bin/bash
 
 echo 'launching streaming pipeline'
-echo 'usage: ./run.sh Project BigQueryDataset.Table PubSubTopic'
+echo 'usage: ./run.sh Project BigQueryDataset.Table PubSubTopic Bucket-ID Bucket-Folder'
 
-if ["$#" -ne 3]; then
+if [[ "$#" -ne 5 ]]; then
   echo 'wrong usage'
   exit
 fi
 
-PROJECT=$1
-BQ=$2
-PUBSUB=$3
-
-python pipeline.py --project=$PROJECT --bq=$BQ --pubsub=$PUBSUB
-
-echo '+'
+python pipeline.py --project=$1 --bq=$2 --pubsub=$3 --bucketid=$4 --bucketfolder=$5

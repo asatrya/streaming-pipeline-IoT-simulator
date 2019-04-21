@@ -4,11 +4,6 @@ import apache_beam as beam
 import argparse
 import logging
 
-
-BUCKET_ID = 'udemy-data-engineer-210920'
-BUCKET_FOLDER = 'iot-stream'
-
-
 class SpeedOnFreewayFn(beam.DoFn):
 
     def process(self, el):
@@ -66,6 +61,12 @@ def run():
     parser.add_argument('--project',
                         required=True,
                         help='Project ID')
+    parser.add_argument('--bucketid',
+                        required=True,
+                        help='Bucket ID')
+    parser.add_argument('--bucketfolder',
+                        required=True,
+                        help='Bucket folder')
 
     args = parser.parse_args()
 
@@ -73,8 +74,8 @@ def run():
       '--project={0}'.format(args.project),
       '--job_name=iotstream',
       '--save_main_session',
-      '--staging_location=gs://{0}/{1}/staging/'.format(BUCKET_ID, BUCKET_FOLDER),
-      '--temp_location=gs://{0}/{1}/staging/'.format(BUCKET_ID, BUCKET_FOLDER),
+      '--staging_location=gs://{0}/{1}/staging/'.format(args.bucketid, args.bucketfolder),
+      '--temp_location=gs://{0}/{1}/staging/'.format(args.bucketid, args.bucketfolder),
       '--runner=DataflowRunner',
       '--streaming']
 
