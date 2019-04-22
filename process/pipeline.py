@@ -20,6 +20,7 @@ class SpeedOnFreewayFn(beam.DoFn):
 
         yield freeway_and_speed
 
+
 class FormatBQRowFn(beam.DoFn):
 
     def process(self, el, window=beam.DoFn.WindowParam):
@@ -111,7 +112,6 @@ def run():
         average = (window
             | 'Group' >> beam.GroupByKey()
             | 'Average' >> beam.Map(resolve_average_speed))
-
 
         formatted = average | 'Format' >> beam.ParDo(FormatBQRowFn())
 
