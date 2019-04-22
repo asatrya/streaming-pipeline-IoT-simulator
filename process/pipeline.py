@@ -3,6 +3,8 @@
 import apache_beam as beam
 import argparse
 import logging
+import json
+
 
 class SpeedOnFreewayFn(beam.DoFn):
 
@@ -40,6 +42,20 @@ class FormatBQRowFn(beam.DoFn):
 
         yield formatted
 
+
+class JsonDumpFn(beam.DoFn):
+
+    def process(self, el):
+
+        logging.info('JsonDump in {}'.format(el))
+
+        json_dump = json.dumps(el)
+
+        logging.info('JsonDump out {}'.format(json_dump))
+
+        yield json_dump
+
+
 def resolve_average_speed(el):
 
     (freeway, speed) = el
@@ -48,13 +64,17 @@ def resolve_average_speed(el):
 
     return (freeway, average_speed)
 
+
 def run():
 
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('--pubsub',
+    parser.add_argument('--pubsubread',
                         required=True,
-                        help='PubSub topic')
+                        help='PubSub read topic')
+    parser.add_argument('--pubsubwrite',
+                        required=True,
+                        help='PubSub write topic')
     parser.add_argument('--bq',
                         required=True,
                         help='BigQuery table')
@@ -81,10 +101,9 @@ def run():
 
     with beam.Pipeline(argv=argv) as pipeline:
 
-        pubsub_topic_path = 'projects/{0}/topics/{1}'.format(args.project,
-                                                             args.pubsub)
+        pubsub_read_topic_path = 'projects/{0}/topics/{1}'.format(args.project, args.pubsubread)
 
-        stream = pipeline | beam.io.ReadFromPubSub(pubsub_topic_path)
+        stream = pipeline | beam.io.ReadFromPubSub(pubsub_read_topic_path)
 
         speeds = stream | 'SpeedOnFreeway' >> beam.ParDo(SpeedOnFreewayFn())
 
@@ -101,6 +120,13 @@ def run():
                 schema='freeway:STRING, speed:FLOAT, window_start:TIMESTAMP, window_end:TIMESTAMP',
                 create_disposition=beam.io.BigQueryDisposition.CREATE_IF_NEEDED,
                 write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND)
+
+        pubsub_write_topic_path = 'projects/{0}/topics/{1}'.format(args.project, args.pubsubwrite)
+
+        json = formatted | 'JsonDump' >> beam.ParDo(JsonDumpFn())
+
+        json | 'SinkToPubSub' >> beam.io.WriteStringsToPubSub(pubsub_write_topic_path)
+
 
 if __name__ == '__main__':
 
