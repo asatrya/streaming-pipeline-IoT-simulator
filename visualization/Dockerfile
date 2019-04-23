@@ -15,11 +15,12 @@ RUN export CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)" && \
 
 ENV GOOGLE_APPLICATION_CREDENTIALS /usr/local/etc/key.json
 COPY image-files/ /
-RUN chmod 700 /usr/local/bin/websocketd
+RUN chmod 777 /usr/local/bin/websocketd
 
 RUN mkdir /app
 WORKDIR /app
 COPY . .
+RUN chmod -R 777 .
 
 RUN pip install -r requirements.txt
 

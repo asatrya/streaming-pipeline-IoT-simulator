@@ -23,6 +23,7 @@ RUN chmod 700 /usr/local/bin/docker-entrypoint.sh
 RUN mkdir /app
 WORKDIR /app
 COPY . .
+RUN chmod -R 777 .
 
 RUN pip install -r requirements.txt
 
