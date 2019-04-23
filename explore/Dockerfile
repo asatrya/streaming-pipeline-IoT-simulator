@@ -17,14 +17,14 @@ RUN apt-get install php libapache2-mod-php php-mysql -y
 COPY image-files/ /
 
 # Configure SSL
-RUN apt-get install software-properties-common -y
-RUN add-apt-repository ppa:certbot/certbot
-RUN apt-get install python-certbot-apache -y
-RUN a2enmod ssl
-RUN a2enmod headers
-RUN a2ensite default-ssl
-RUN a2enconf ssl-params
-RUN apache2ctl configtest
+#RUN apt-get install software-properties-common -y
+#RUN add-apt-repository ppa:certbot/certbot
+#RUN apt-get install python-certbot-apache -y
+#RUN a2enmod ssl
+#RUN a2enmod headers
+#RUN a2ensite default-ssl
+#RUN a2enconf ssl-params
+#RUN apache2ctl configtest
 
 # Create app folder
 WORKDIR /var/www/html
