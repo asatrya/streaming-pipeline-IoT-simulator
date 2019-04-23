@@ -35,7 +35,7 @@ services:
     env_file:
       - .env
     volumes:
-      - ./explore:/app
+      - ./explore:/var/www/html
       - ./key.json:/usr/local/etc/key.json
     ports:
       - 80:80
