@@ -28,3 +28,15 @@ services:
       - ./key.json:/usr/local/etc/key.json
     ports:
       - 9000:9000
+
+  explore:
+    build: ./explore
+    image: asatrya/iot-explore:1.0
+    env_file:
+      - .env
+    volumes:
+      - ./explore:/app
+      - ./key.json:/usr/local/etc/key.json
+    ports:
+      - 80:80
+      - 443:443
