@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo 'launching streaming pipeline'
-echo 'usage: ./run.sh Project BigQueryDataset.Table PubSubTopic Bucket-ID Bucket-Folder'
+echo 'usage: ./run.sh Project BigQueryDataset.Table PubSubTopic-read Bucket-ID Bucket-Folder PubSubTopic-write'
 
 if [[ "$#" -ne 6 ]]; then
   echo 'wrong usage'

@@ -11,6 +11,4 @@ fi
 bq mk iot
 bq mk -t $1 freeway:STRING,speed:FLOAT,window_start:TIMESTAMP,window_end:TIMESTAMP
 
-pip install --upgrade google-cloud-dataflow
-
 echo '+'

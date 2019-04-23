@@ -9,7 +9,7 @@ from google.cloud import pubsub
 
 TIME_FORMAT = '%Y-%m-%d %H:%M:%S'
 TOPIC = 'sensors'
-INPUT = 'sensor_obs2008.csv.gz'
+INPUT = 'data/sensor_obs2008.csv.gz'
 
 # TODO: vg: optional use of batch msging
 def publish(publisher, topic, events):

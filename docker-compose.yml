@@ -1,10 +1,30 @@
 version: '3'
 services:
-  app:
-    build: .
-    image: asatrya/streaming-simulation:1.0
+  publish:
+    build: ./publish
+    image: asatrya/iot-publish:1.0
     env_file:
       - .env
     volumes:
-      - .:/app
+      - ./publish:/app
       - ./key.json:/usr/local/etc/key.json
+
+  process:
+    build: ./process
+    image: asatrya/iot-process:1.0
+    env_file:
+      - .env
+    volumes:
+      - ./process:/app
+      - ./key.json:/usr/local/etc/key.json
+
+  visualization:
+    build: ./visualization
+    image: asatrya/iot-visualization:1.0
+    env_file:
+      - .env
+    volumes:
+      - ./visualization:/app
+      - ./key.json:/usr/local/etc/key.json
+    ports:
+      - 9000:9000
